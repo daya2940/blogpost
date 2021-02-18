@@ -1,14 +1,42 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchPost } from "../actions";
+import { fetchPosts } from "../actions";
+import UserHeader from "./UserHeader";
+import identity from "../assets/identity.svg";
 
 class Postlist extends Component {
   componentDidMount() {
-    this.props.fetchPost();
+    this.props.fetchPosts();
+  }
+
+  renderList() {
+    return this.props.posts.map((post) => {
+      return (
+        <div className="d-flex justify-content-center" key={post.id}>
+          <div className="card">
+            <img src={identity} alt="" />
+            <div
+              className="card-body"
+              style={{ margin: "0 auto", width: "300px" }}
+            >
+              <h5 className="card-title">{post.title}</h5>
+              <p className="card-text">{post.body}</p>
+              <UserHeader userId={post.userId} />
+            </div>
+          </div>
+        </div>
+      );
+    });
   }
   render() {
-    return <div>PostLists</div>;
+    return <div> {this.renderList()}</div>;
   }
 }
 
-export default connect(null, fetchPost)(Postlist);
+//this mapstateToProps is callled again and again when the data in the store changes
+
+const mapStateToProps = (state) => {
+  return { posts: state.posts };
+};
+
+export default connect(mapStateToProps, { fetchPosts })(Postlist);
